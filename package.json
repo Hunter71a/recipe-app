@@ -1,0 +1,25 @@
+{
+  "name": "recipe",
+  "version": "1.0.0",
+  "description": "recipe app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hunter71a/recipe-app.git"
+  },
+  "author": "Carl Olson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Hunter71a/recipe-app/issues"
+  },
+  "homepage": "https://github.com/Hunter71a/recipe-app#readme",
+  "devDependencies": {
+    "webpack": "^4.43.0"
+  },
+  "dependencies": {
+    "jquery": "^3.5.0"
+  }
+}
