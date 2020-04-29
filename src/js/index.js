@@ -16,7 +16,7 @@
 
 import Search from './models/Search';
 import * as searchView from './views/searchView';
-import {elements} from './views/base';
+import { elements, renderLoader, clearLoader, elementStrings } from './views/base';
 
 console.log('webpack-dev-server is running')
 /**
@@ -26,35 +26,46 @@ Global state of the app
 - Shopping list object
 - liked Recipes
 */
+const state = {};
 
- const state = {};
-
- const controlSearch= async () => {
+const controlSearch = async () => {
   // get query from the view
-  const query = 'pizza' // todo
+  const query = searchView.getInput();
+  console.log(query);
 
   if (query) {
     // New Search Object and add to state
     state.search = new Search(query);
 
     // Prepare UI for results -- add spinner and clear input
+    searchView.clearInput();
+    searchView.clearResults();
+    renderLoader(elements.searchResultArea);
+
 
     // Search for recipes
     await state.search.getResults();
 
     // Render results on UI
-    console.log(state.search.result);
-
+    clearLoader();
+    searchView.renderResults(state.search.result);
 
   }
+}
 
-   
- }
+document.querySelector('.search').addEventListener('submit', e => {
+  e.preventDefault();
+  controlSearch();
+});
 
- document.querySelector('.search').addEventListener('submit', e => {
-   e.preventDefault();
-   controlSearch();
- });
+elements.searchResultPages.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-inline');
+  if (btn) {
+    const goToPage = parseInt(btn.dataset.goto, 10);
+    searchView.clearResults();
+    searchView.renderResults(state.search.result, goToPage);
+  }
+});
 
 
 
