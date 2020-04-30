@@ -5,18 +5,12 @@
 // install using '>npm install axios --save'
 // import using name found in package.json
 
-// Forkify API notes:
-// Search Path: https://forkify-api.herokuapp.com/api/search
-// Example URL: https://forkify-api.herokuapp.com/api/search?q=pizza
-// Parmeter: p, Required: yes 
 
-// Get Path: https://forkify-api.herokuapp.com/api/get
-// Example URL: https://forkify-api.herokuapp.com/api/get?rId=47746
-// Parameter rId, Required: yes 
-
+import Recipe from './models/Recipe';
 import Search from './models/Search';
 import * as searchView from './views/searchView';
 import { elements, renderLoader, clearLoader, elementStrings } from './views/base';
+
 
 console.log('webpack-dev-server is running')
 /**
@@ -27,6 +21,10 @@ Global state of the app
 - liked Recipes
 */
 const state = {};
+
+/**
+ * SEARCH CONTROLLER
+*/
 
 const controlSearch = async () => {
   // get query from the view
@@ -67,7 +65,12 @@ elements.searchResultPages.addEventListener('click', e => {
   }
 });
 
+/**
+ * Recipe controller
+ */
 
+const r = new Recipe(47746);
+r.getRecipe();
 
 
 
