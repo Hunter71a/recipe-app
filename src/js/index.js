@@ -25,11 +25,9 @@ const state = {};
 /**
  * SEARCH CONTROLLER
 */
-
 const controlSearch = async () => {
   // get query from the view
   const query = searchView.getInput();
-  console.log(query);
 
   if (query) {
     // New Search Object and add to state
@@ -41,13 +39,17 @@ const controlSearch = async () => {
     renderLoader(elements.searchResultArea);
 
 
-    // Search for recipes
-    await state.search.getResults();
+    try {
+      // Search for recipes
+      await state.search.getResults();
 
-    // Render results on UI
-    clearLoader();
-    searchView.renderResults(state.search.result);
-
+      // Render results on UI
+      clearLoader();
+      searchView.renderResults(state.search.result);
+    } catch (error) {
+      console.log(error);
+      clearLoader();
+    }
   }
 }
 
@@ -69,8 +71,49 @@ elements.searchResultPages.addEventListener('click', e => {
  * Recipe controller
  */
 
-const r = new Recipe(47746);
-r.getRecipe();
+const controlRecipe = async () => {
+  // Get ID from url
+  const id = window.location.hash.replace('#', '');
+  console.log(id);
 
 
+  if (id) {
+    // prepare the UI for changes
 
+
+    // Create new recipe object
+    state.recipe = new Recipe(id);
+
+    try {
+      // get recipe data
+      await state.recipe.getRecipe();
+
+
+      // Calculate servings and time
+      state.recipe.calcPrepTime();
+      state.recipe.calcServings();
+
+
+      // render recipe
+      console.log(state.recipe);
+
+
+    } catch (error) {
+      console.log(error);
+      alert('Something has gone wrong: ');
+    }
+  }
+};
+
+// step 1: add an event listener to the global object
+// window.addEventListener('hashchange', controlRecipe);
+// add event listener to the "load window" event
+// window.addEventListener('load', controlRecipe);
+
+// combine these into a single statement
+['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
+
+
+// const r = new Recipe(46895);
+// r.getRecipe();
+// console.log(r);
