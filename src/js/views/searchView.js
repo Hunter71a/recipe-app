@@ -17,7 +17,7 @@ export const highlightSelected = id => {
   resultsArr.forEach(item => {
     item.classList.remove('results__link--active');
   });
-  document.querySelector(`a[href="#${id}"]`).classList.add('.results__link--active');
+  document.querySelector(`a[href="#${id}"]`).classList.add('results__link--active');
 };
 
 
