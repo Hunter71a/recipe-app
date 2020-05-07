@@ -6,6 +6,7 @@
 // import using name found in package.json
 
 
+import List from './models/List';
 import Recipe from './models/Recipe';
 import Search from './models/Search';
 import * as searchView from './views/searchView';
@@ -38,10 +39,9 @@ const controlSearch = async () => {
     // Prepare UI for results -- add spinner and clear input
     searchView.clearInput();
     searchView.clearResults();
-    renderLoader(elements.searchResultArea);
-
-
+    renderLoader(elements.searchResultArea);    
     try {
+
       // Search for recipes
       await state.search.getResults();
 
@@ -60,13 +60,6 @@ elements.searchForm.addEventListener('submit', e => {
   controlSearch();
 });
 
-// testing -- automatically on document load
-// window.addEventListener('load', e => {
-//   e.preventDefault();
-//   elements.searchInput.value = 'pizza';
-//   controlSearch();
-// });
-
 elements.searchResultPages.addEventListener('click', e => {
   const btn = e.target.closest('.btn-inline');
   if (btn) {
@@ -76,15 +69,14 @@ elements.searchResultPages.addEventListener('click', e => {
   }
 });
 
+
 /**
  * Recipe controller
  */
-
 const controlRecipe = async () => {
   // Get ID from url
   const id = window.location.hash.replace('#', '');
   console.log(id);
-
 
   if (id) {
     // prepare the UI for changes
@@ -105,14 +97,9 @@ const controlRecipe = async () => {
       await state.recipe.getRecipe();
       state.recipe.parseIngredients();
 
-
       // Calculate servings and time
       state.recipe.calcPrepTime();
       state.recipe.calcServings();
-
-
-      // render recipe
-     // console.log(state.recipe);
       clearLoader();
       recipeView.renderRecipe(state.recipe);
 
@@ -131,6 +118,28 @@ const controlRecipe = async () => {
 // combine these into a single statement
 ['hashchange', 'load'].forEach(event => window.addEventListener(event, controlRecipe));
 
+
+/**
+ * LIST CONTROLLER
+ */
+const controlList = () => {
+  // Create a new list if there is none yet
+  if (!state.list) state.list = new List();
+
+  // Add each ingredient to the list
+  state.recipe.ingredients.forEach(el => {
+    state.list.addItem();
+
+
+  });
+
+
+
+
+
+}
+
+
 // handling recipe button clicks
 elements.recipe.addEventListener('click', e => {
   if (e.target.matches('.btn-decrease, .btn-decrease *')) {
@@ -143,9 +152,10 @@ elements.recipe.addEventListener('click', e => {
     // increase ingredients butten event
     state.recipe.updateServings('inc');
     recipeView.updateServingsIngredients(state.recipe);
+  } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+    controlList();
   }
-  console.log(state.recipe);
 });
 
-
+window.l = new List();
 
