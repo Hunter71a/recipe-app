@@ -140,7 +140,8 @@ const controlList = () => {
 // handle delete and update list item events
 elements.shopping.addEventListener('click', e => {
   const id = e.target.closest('.shopping__item').dataset.itemid;
-
+  const count = state.list.items.find(item => item.id === id).count;
+  console.log(count);
   // Handle the delete button
   if (e.target.matches('.shopping__delete, .shopping__delete *')) {
    // Delete from state and user interface
@@ -149,8 +150,11 @@ elements.shopping.addEventListener('click', e => {
    // handle count update
   } else if (e.target.matches('.shopping__count-value')) {
     const val = parseFloat(e.target.value, 10);
-    state.list.updateCount(id, val);
-  
+    if (count > 0) {
+    state.list.updateCount(id, val);  
+    } else {
+      e.target.value = 0;
+    }
   }
 });
 
