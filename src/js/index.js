@@ -6,9 +6,11 @@
 // import using name found in package.json
 
 
+import Likes from './models/Likes';
 import List from './models/List';
 import Recipe from './models/Recipe';
 import Search from './models/Search';
+import * as likesView from './views/likesView';
 import * as listView from './views/listView';
 import * as recipeView from './views/recipeView';
 import * as searchView from './views/searchView';
@@ -43,7 +45,7 @@ const controlSearch = async () => {
     // Prepare UI for results -- add spinner and clear input
     searchView.clearInput();
     searchView.clearResults();
-    renderLoader(elements.searchResultArea);    
+    renderLoader(elements.searchResultArea);
     try {
 
       // Search for recipes
@@ -105,7 +107,10 @@ const controlRecipe = async () => {
       state.recipe.calcPrepTime();
       state.recipe.calcServings();
       clearLoader();
-      recipeView.renderRecipe(state.recipe);
+      recipeView.renderRecipe(
+        state.recipe,
+        state.likes.isLiked(id)        
+        );
 
     } catch (error) {
       console.log(error);
@@ -143,14 +148,14 @@ elements.shopping.addEventListener('click', e => {
   const count = state.list.items.find(item => item.id === id).count;
   // Handle the delete button
   if (e.target.matches('.shopping__delete, .shopping__delete *')) {
-   // Delete from state and user interface
-   state.list.deleteItem(id);
-   listView.deleteItem(id);
-   // handle count update
+    // Delete from state and user interface
+    state.list.deleteItem(id);
+    listView.deleteItem(id);
+    // handle count update
   } else if (e.target.matches('.shopping__count-value')) {
     const val = parseFloat(e.target.value, 10);
     if (count > 0) {
-    state.list.updateCount(id, val);  
+      state.list.updateCount(id, val);
     } else {
       e.target.value = 0;
     }
@@ -158,20 +163,91 @@ elements.shopping.addEventListener('click', e => {
 });
 
 
+
+
+/**
+ * LIKE CONTROLLER
+ */
+
+//state.likes = new Likes();
+//  likesView.toggleLikeBtn(state.likes.getNumLikes());
+
+const controlLike = () => {
+  // create likes object and add to state
+  if (!state.likes) state.likes = new Likes();
+  const currentID = state.recipe.id;
+  console.log(state.recipe.id);
+  // Case 1: User has not liked current recipe yet
+  if (!state.likes.isLiked(currentID)) {
+    // Add like to state
+    const newLike = state.likes.addLike(
+      currentID,
+      state.recipe.title,
+      state.recipe.author,
+      state.recipe.title,
+      state.recipe.img
+    );
+    // Toggle the like button
+    likesView.toggleLikeBtn(true);
+
+    // Add like to UI list
+    likesView.renderLike(newLike);
+    console.log(state.likes);
+
+    // Case 2: User has already liked current recipe
+  } else {
+    // remove like from state
+    state.likes.deleteLike(currentID);
+
+
+    // toggle the like button
+    likesView.toggleLikeBtn(false);
+
+    // Remove like from the UI lise
+    likesView.deleteLike(currentID);
+    console.log(state.likes);
+  }
+  likesView.toggleLikeBtn(state.likes.getNumLikes());
+
+};
+
+
+// Restore liked recipes on page load
+window.addEventListener('load', () => {
+  state.likes = new Likes();
+  
+  // Restore likes
+  state.likes.readStorage();
+
+  // toggle like menu button
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
+
+  // Render the existing likes
+  state.likes.likes.forEach(like => {
+    likes.likesView.renderLike(like);
+  });
+});
+
+
+
 // handling recipe button clicks
 elements.recipe.addEventListener('click', e => {
   if (e.target.matches('.btn-decrease, .btn-decrease *')) {
     // decrease ingredients button event
-    if (state.recipe.servings > 1){
-    state.recipe.updateServings('dec');
-    recipeView.updateServingsIngredients(state.recipe);
+    if (state.recipe.servings > 1) {
+      state.recipe.updateServings('dec');
+      recipeView.updateServingsIngredients(state.recipe);
     }
-  }else if (e.target.matches('.btn-increase, .btn-increase *')){
+  } else if (e.target.matches('.btn-increase, .btn-increase *')) {
     // increase ingredients butten event
     state.recipe.updateServings('inc');
     recipeView.updateServingsIngredients(state.recipe);
   } else if (e.target.matches('.recipe__btn--add, .recipe__btn--add *')) {
+    // Add ingredients
     controlList();
+  } else if (e.target.matches('.recipe__love, .recipe__love *')) {
+    // Like controller
+    controlLike();
   }
 });
 
