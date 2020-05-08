@@ -9,8 +9,9 @@
 import List from './models/List';
 import Recipe from './models/Recipe';
 import Search from './models/Search';
-import * as searchView from './views/searchView';
+import * as listView from './views/listView';
 import * as recipeView from './views/recipeView';
+import * as searchView from './views/searchView';
 import { elements, renderLoader, clearLoader, elementStrings } from './views/base';
 
 
@@ -23,6 +24,9 @@ Global state of the app
 - liked Recipes
 */
 const state = {};
+window.state = state;
+// window.list = new List();
+
 
 /**
  * SEARCH CONTROLLER
@@ -128,16 +132,27 @@ const controlList = () => {
 
   // Add each ingredient to the list
   state.recipe.ingredients.forEach(el => {
-    state.list.addItem();
-
-
+    const item = state.list.addItem(el.count, el.unit, el.ingredient);
+    listView.renderItem(item);
   });
-
-
-
-
-
 }
+
+// handle delete and update list item events
+elements.shopping.addEventListener('click', e => {
+  const id = e.target.closest('.shopping__item').dataset.itemid;
+
+  // Handle the delete button
+  if (e.target.matches('.shopping__delete, .shopping__delete *')) {
+   // Delete from state and user interface
+   state.list.deleteItem(id);
+   listView.deleteItem(id);
+   // handle count update
+  } else if (e.target.matches('.shopping__count-value')) {
+    const val = parseFloat(e.target.value, 10);
+    state.list.updateCount(id, val);
+  
+  }
+});
 
 
 // handling recipe button clicks
@@ -157,5 +172,5 @@ elements.recipe.addEventListener('click', e => {
   }
 });
 
-window.l = new List();
+
 

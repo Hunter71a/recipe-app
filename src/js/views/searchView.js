@@ -62,7 +62,7 @@ const createButton = (page, type) => `
       <use href="img/icons.svg#icon-triangle-${type === 'prev' ? 'left' : 'right'}"></use>
     </svg>
   </button>          
-`; 
+`;
 
 
 
