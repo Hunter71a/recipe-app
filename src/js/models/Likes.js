@@ -25,6 +25,7 @@ export default class Likes {
   }
 
   getNumLikes() {
+    console.log(this.likes.length);
     return this.likes.length;
   }
   persistData() {
@@ -35,7 +36,7 @@ export default class Likes {
     const storage = JSON.parse(localStorage.getItem('likes'));
 
     // Restoring likes from the localStorage
-    if (storage) this.like = storage;
+    if (storage) this.likes = storage;
 
   }
 }

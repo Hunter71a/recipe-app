@@ -176,7 +176,7 @@ const controlLike = () => {
   // create likes object and add to state
   if (!state.likes) state.likes = new Likes();
   const currentID = state.recipe.id;
-  console.log(state.recipe.id);
+
   // Case 1: User has not liked current recipe yet
   if (!state.likes.isLiked(currentID)) {
     // Add like to state
@@ -184,7 +184,6 @@ const controlLike = () => {
       currentID,
       state.recipe.title,
       state.recipe.author,
-      state.recipe.title,
       state.recipe.img
     );
     // Toggle the like button
@@ -207,7 +206,8 @@ const controlLike = () => {
     likesView.deleteLike(currentID);
     console.log(state.likes);
   }
-  likesView.toggleLikeBtn(state.likes.getNumLikes());
+  likesView.toggleLikeMenu(state.likes.getNumLikes());
+  console.log(state.likes.getNumLikes());
 
 };
 
@@ -223,9 +223,7 @@ window.addEventListener('load', () => {
   likesView.toggleLikeMenu(state.likes.getNumLikes());
 
   // Render the existing likes
-  state.likes.likes.forEach(like => {
-    likes.likesView.renderLike(like);
-  });
+  state.likes.likes.forEach(like => likesView.renderLike(like));
 });
 
 
