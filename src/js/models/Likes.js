@@ -25,7 +25,6 @@ export default class Likes {
   }
 
   getNumLikes() {
-    console.log(this.likes.length);
     return this.likes.length;
   }
   persistData() {

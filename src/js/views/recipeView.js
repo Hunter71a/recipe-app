@@ -10,14 +10,15 @@ export const clearRecipe = () => {
 
 const formatNumberToFraction = count => {
   if (count) {
-    const [int, dec] = count.toString().split('.').map(item => parseInt(item, 10));
+    const newCount = Math.round(count * 10000) / 10000;
+    const [int, dec] = newCount.toString().split('.').map(item => parseInt(item, 10));
 
-    if (!dec) return count;
-    if (int === 0) {
-      const fractionalNumber = new Fraction(count);
+    if (!dec) return newCount;
+    if (int === 0) {newCount
+      const fractionalNumber = new Fraction(newCount);
       return `${fractionalNumber.numerator}/${fractionalNumber.denominator}`;
     } else {
-      const fractionalNumber = new Fraction(count - int);
+      const fractionalNumber = new Fraction(newCount - int);
       return `${int} ${fractionalNumber.numerator}/${fractionalNumber.denominator}`;
     }
   }

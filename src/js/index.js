@@ -26,9 +26,6 @@ Global state of the app
 - liked Recipes
 */
 const state = {};
-window.state = state;
-// window.list = new List();
-
 
 /**
  * SEARCH CONTROLLER
@@ -82,7 +79,6 @@ elements.searchResultPages.addEventListener('click', e => {
 const controlRecipe = async () => {
   // Get ID from url
   const id = window.location.hash.replace('#', '');
-  console.log(id);
 
   if (id) {
     // prepare the UI for changes
@@ -191,7 +187,6 @@ const controlLike = () => {
 
     // Add like to UI list
     likesView.renderLike(newLike);
-    console.log(state.likes);
 
     // Case 2: User has already liked current recipe
   } else {
@@ -204,11 +199,8 @@ const controlLike = () => {
 
     // Remove like from the UI lise
     likesView.deleteLike(currentID);
-    console.log(state.likes);
   }
   likesView.toggleLikeMenu(state.likes.getNumLikes());
-  console.log(state.likes.getNumLikes());
-
 };
 
 
